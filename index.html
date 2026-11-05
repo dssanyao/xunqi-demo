@@ -186,11 +186,9 @@ canvas{max-width:100%}
 <div id="loginModal" class="modal hidden">
   <div class="modal-card">
     <h3>登录 / 注册 <span class="demotag">本地演示</span></h3>
-    <p class="muted">演示登录：任意用户名即可进入，只保存在本机浏览器，不联网、不校验、不保存密码。积分与会员均为演示数值。</p>
+    <p class="muted">注册登录：任意用户名即可注册登录，只保存在本机浏览器，不联网、不校验。注册后即可使用咨询、人体、空间模拟等全部功能，不扣积分、不要会员。</p>
     <label>用户名（2–24 位）<input id="loginName" maxlength="24" placeholder="如：daoye"></label>
-    <label>密码（演示，不保存）<input id="loginPass" type="password" maxlength="128" placeholder="任意填写"></label>
-    <div class="row"><button id="loginGo" class="btn gold">登录</button><button id="loginCancel" class="btn ghost">取消</button></div>
-    <p class="muted small">未注册用户在原站登录后自动创建账号；此处为本地演示，无账号体系。</p>
+    <div class="row"><button id="loginGo" class="btn gold">登录 / 注册</button><button id="loginCancel" class="btn ghost">取消</button></div>
   </div>
 </div>
 
@@ -198,8 +196,8 @@ canvas{max-width:100%}
   <div class="modal-card">
     <h3>我的账号 <span class="demotag">本地演示</span></h3>
     <div id="acctInfo"></div>
-    <div class="row"><button id="signBtn" class="btn gold">签到 +10 积分（演示）</button><button id="logoutBtn" class="btn ghost">退出登录</button><button id="acctClose" class="btn ghost">关闭</button></div>
-    <p class="muted small">演示积分仅存本机，与原站账号、支付宝会员无关。原站永久会员 ¥50、积分兑换等均不在本演示内。</p>
+    <div class="row"><button id="logoutBtn" class="btn ghost">退出登录</button><button id="acctClose" class="btn ghost">关闭</button></div>
+    <p class="muted small">账号只保存在本机浏览器，与原站账号无关。本站不设积分与会员。</p>
   </div>
 </div>
 
@@ -10880,7 +10878,7 @@ var jx=kyJiXiong(n);
 var fd=kyDirName(KYST.facing);
 var good=jx.ji.filter(function(g){return g.dir===fd;})[0];
 var bad=jx.xiong.filter(function(g){return g.dir===fd;})[0];
-var a='【本地演示 · 1积分/次】朝向 '+fd+'（'+KYST.facing+'°），'+kyGuaText(n)+'。';
+var a='【本地演示】朝向 '+fd+'（'+KYST.facing+'°），'+kyGuaText(n)+'。';
 if(good)a+='朝向落'+good.name+'方，主吉利，宜在此方开门、置客厅或主卧。';
 else if(bad)a+='朝向落'+bad.name+'方，宜以屏风、绿植或灯光化解，门位避开直冲。';
 else a+='朝向为中性方位，可结合九星飞布再看动静分区。';
@@ -10927,9 +10925,9 @@ return '<button class="btn sm" data-ky-dial="'+t[0]+'">'+t[1]+'</button>';}).joi
 +'<div id="kyScoreOut"></div></div>'
 +'<div class="card"><h3>户型咨询</h3>'
 +'<textarea id="kyAiQ" rows="3" style="width:100%" placeholder="例如：客厅在东南方，门朝南，怎么样？"></textarea>'
-+'<div class="row"><button class="btn gold" id="kyAiBtn">咨询（本地演示 · 1积分/次）</button></div>'
++'<div class="row"><button class="btn gold" id="kyAiBtn">咨询</button></div>'
 +'<div id="kyAiOut"></div>'
-+'<p class="muted small">本地演示：回答由朝向、吉凶与评分数按规则生成，不联网、不计费、不调用真实 AI；“1积分/次”仅为原站计费文案演示。</p></div>'
++'<p class="muted small">注册用户即可使用。本地演示：回答由朝向、吉凶与评分数按规则生成，不联网、不收费、不调用真实 AI。</p></div>'
 +'</div>';
 kyCv=$('kyCv');kyDialCv=$('kyDialCv');
 kyDialDraw(kyDialCv,KYST.dial);
@@ -11007,6 +11005,7 @@ kyDraw();
 /* 评分与咨询 */
 $('kyScoreBtn').addEventListener('click',function(){kyShowScore(v);});
 $('kyAiBtn').addEventListener('click',function(){
+if(typeof user==='function'&&!user()){$('loginModal').classList.remove('hidden');toast('请先登录 / 注册（免费），登录后即可咨询');return;}
 var q=$('kyAiQ').value.trim();
 $('kyAiOut').innerHTML='<div class="card"><p>'+esc(kyAiAnswer())+'</p>'+(q?'<p class="muted small">你的问题：'+esc(q)+'</p>':'')+'</div>';
 });
@@ -11014,7 +11013,7 @@ $('kyAiOut').innerHTML='<div class="card"><p>'+esc(kyAiAnswer())+'</p>'+(q?'<p c
 
 /* ================= 空间模拟 · 粒子流场（canvas 2D 俯视房间，无外部 3D 库） ================= */
 var XQST={running:false,particles:[],speed:26,intensity:1.0,life:10,dir:0,mode:'bio',bazhai:false,wind:false};
-var XQXT={doorOpen:true,nineStar:false,tide:false,sunlight:0,hour:12,doors:[],outlets:[],structures:[],tab:'indoor',submitCount:0};
+var XQXT={doorOpen:true,nineStar:false,tide:false,sunlight:0,hour:12,doors:[],outlets:[],structures:[],tab:'indoor'};
 var XQVIEW={scale:1,ox:0,oy:0};
 var XQMAP={mode:'house',house:null,features:[],current:[],shaPt:null};
 var xqCv=null,xqDialCv=null,xqMapCv=null,xqRaf=null,xqTick=0,xqStructN=0,xqDoorN=0,xqOutN=0;
@@ -11304,8 +11303,8 @@ function renderXunqi(v){
   xqStop();xqCv=null;xqDialCv=null;xqMapCv=null;
   v.innerHTML='<div class="wrap">'
   +'<div class="card"><h2>空间模拟</h2><p class="muted">俯视房间里看炁的流动：从主炁口进来，穿过房间，从出风口出去。粒子、风场与采光均为本地 2D 演示。</p>'
-  +'<p class="note">演示说明：原站每天免费提交 1 次、之后每次 1 积分（后端规则）；本演示不计费、不联网，提交次数仅为本地演示计数。</p>'
-  +'<div class="row"><button class="btn gold" id="xqSubmit">户型提交 / 预览</button><span class="chip">演示计数：<b id="xqCount">0</b> 次</span></div></div>'
+  +'<p class="note">注册用户即可使用；提交在本地完成，不计费、不联网。</p>'
+  +'<div class="row"><button class="btn gold" id="xqSubmit">户型提交 / 预览</button></div></div>'
   +'<div class="tabs"><button class="on" id="xqTabIn">室内模拟</button><button id="xqTabOut">外部环境</button></div>'
   +'<div id="xqIndoor"><div class="card"><h3>室内俯视图</h3>'
   +'<div style="max-width:560px"><canvas id="xqCv" width="560" height="360"></canvas></div>'
@@ -11352,13 +11351,12 @@ function renderXunqi(v){
   kyDialDraw(xqDialCv,'luopan');
   $('xqAstro').innerHTML=xqAstroHtml();
   $('xqBazhaiOut').innerHTML=xqBazhaiHtml();
-  $('xqCount').textContent=String(XQXT.submitCount);
   xqDraw();xqMapDraw();xqRenderStructList(v);xqRenderFeatList(v);xqMapAnalysis(v);
   function syncToggle(id,on){var b=$(id);if(b){b.textContent=b.textContent.replace(/ · [开关]$/,'')+(on?' · 开':' · 关');b.classList.toggle('gold',!!on);}}
-  /* 提交计数（本地演示） */
+  /* 提交预览（注册用户制） */
   $('xqSubmit').addEventListener('click',function(){
-    XQXT.submitCount++;$('xqCount').textContent=String(XQXT.submitCount);
-    toast('已提交预览（演示计数 '+XQXT.submitCount+' 次，不计费）');
+    if(typeof user==='function'&&!user()){$('loginModal').classList.remove('hidden');toast('请先登录 / 注册（免费），登录后即可提交预览');return;}
+    toast('已提交预览（演示）');
   });
   /* 标签页切换 */
   $('xqTabIn').addEventListener('click',function(){
@@ -11502,7 +11500,7 @@ window.__XQ_B2.xqStart=xqStart;
 </script>
 <script>
 /* 人体（第二批）· 原创示意绘制，非原站 3D 内容复刻。
-   原站此工具未在探查中见到（需永久会员解锁），本页人体结构、经络走
+   原站此工具未在探查中见到（原站为付费墙，本站改为注册用户即可使用），本页人体结构、经络走
    向与穴位点位均为本演示原创绘制；穴位名称与定位取标准穴名口径，
    仅供传统文化学习参考，不作医疗诊断与治疗建议。 */
 function rtM(key,name,full,yinYang,element,shichen,desc,pairs){
@@ -11850,6 +11848,10 @@ function rtReflexSVG(kind){
   +'<text x="100" y="292" text-anchor="middle" fill="#9DB3AC" font-size="12">手掌反射区 · 示意</text></svg>';
 }
 function renderRenti(v){
+  if(typeof user==='function'&&!user()){
+    v.innerHTML='<div class="wrap">'+regPromptHTML('人体','人体经络为注册用户功能，请先登录 / 注册，免费开通。')+'</div>';
+    bindLoginOpen(v);return;
+  }
   const rtTotal=RT_MERIDIANS.reduce(function(a,m){return a+m.points.length;},0);
   const rtQiRows=RT_SHICHEN.map(function(x){
     const val=RT_QIXUE[x.shi];
@@ -11860,7 +11862,7 @@ function renderRenti(v){
   }).join('');
   v.innerHTML='<div class="wrap">'
   +'<div class="card"><h2>人体 <span class="demotag">演示</span></h2>'
-  +'<p class="note">原站此工具需永久会员解锁, 本演示已本地开放; 以下人体结构与经络穴位为本演示原创绘制, 非原站 3D 内容复刻</p>'
+  +'<p class="note">本站改为注册用户即可使用；以下人体结构与经络穴位为本演示原创绘制，非原站 3D 内容复刻</p>'
   +'<p>十四经共 <b>'+rtTotal+' 穴</b> (标准穴名)：肺 11 · 大肠 20 · 胃 45 · 脾 21 · 心 9 · 小肠 19 · 膀胱 67 · 肾 27 · 心包 9 · 三焦 23 · 胆 44 · 肝 14 · 督 28 · 任 24。</p>'
   +'<p class="note">穴位信息为传统文化学习参考, 不作医疗诊断与治疗建议</p></div>'
   +'<div class="card"><h3>人体图</h3>'
@@ -11966,8 +11968,8 @@ function setUser(u){store.set('user',u);renderAcct();}
 /* ---------- 主题（白天/黑夜，持久化）与语言（中/EN，切换顶栏与导航文案；工具内容仍为中文） ---------- */
 const EN_TOOLS={mingshu:'MingShu',ziwei:'ZiWei',qizheng:'QiZheng',renti:'Human Body',kanyu:'KanYu',xunqi:'Space Sim',bushi:'LiuYao',qimen:'QiMen'};
 const EN_GROUPS=['People & Destiny','House & Space','ZhouYi & Culture'];
-const I18N={zh:{home:'首页',allTools:'全部工具',explore:'开始探索',heroT:'寻东方时间与空间的秩序',heroP:'从八字命书到堪舆空间，把看不见的秩序画出来。',demoNote:'演示说明：本页为复刻演示，登录、积分、AI 均为本地演示，不连原站后端。',recent:'最近使用',signin:'登录 / 注册',themeDark:'深色',themeLight:'浅色',menu:'导航菜单',closeMenu:'关闭菜单'},
-en:{home:'Home',allTools:'All Tools',explore:'Start Exploring',heroT:'Time Has Rhythm, Space Has Direction',heroP:'From BaZi charts to feng shui space, the hidden order of time and space, drawn as a readable chart. Charts are computed locally; birth data is never uploaded.',demoNote:'Demo note: this is a replica demo. Login, points and AI are local demos, not connected to the original backend. Tool content remains in Chinese.',recent:'Recent',signin:'Sign in / Register',themeDark:'Dark',themeLight:'Light',menu:'Menu',closeMenu:'Close menu'}};
+const I18N={zh:{home:'首页',allTools:'全部工具',explore:'开始探索',heroT:'寻东方时间与空间的秩序',heroP:'从八字命书到堪舆空间，把看不见的秩序画出来。',demoNote:'演示说明：本页为复刻演示，登录、AI 均为本地演示，不连原站后端。本站不设积分与会员，注册用户即可使用全部功能。',recent:'最近使用',signin:'登录 / 注册',themeDark:'深色',themeLight:'浅色',menu:'导航菜单',closeMenu:'关闭菜单'},
+en:{home:'Home',allTools:'All Tools',explore:'Start Exploring',heroT:'Time Has Rhythm, Space Has Direction',heroP:'From BaZi charts to feng shui space, the hidden order of time and space, drawn as a readable chart. Charts are computed locally; birth data is never uploaded.',demoNote:'Demo note: this is a replica demo. Login and AI are local demos, not connected to the original backend. No points or membership here: registered users can use everything. Tool content remains in Chinese.',recent:'Recent',signin:'Sign in / Register',themeDark:'Dark',themeLight:'Light',menu:'Menu',closeMenu:'Close menu'}};
 const lang=()=>store.get('lang','zh');
 const L=k=>I18N[lang()][k]||I18N.zh[k]||k;
 const toolName=k=>lang()==='en'?EN_TOOLS[k]:TOOLS[k].name;
@@ -11977,8 +11979,18 @@ function applyTheme(){const l=store.get('theme','dark')==='light';document.body.
 function toggleTheme(){store.set('theme',document.body.classList.contains('light')?'dark':'light');applyTheme();}
 function applyLang(){document.documentElement.lang=lang()==='en'?'en':'zh-CN';renderAcct();renderDrawer();}
 function toggleLang(){store.set('lang',lang()==='en'?'zh':'en');applyLang();router();}
-function renderAcct(){const u=user();const t=u?(u.name+' | '+u.points+(lang()==='en'?' pts (demo)':' 积分（演示）')):L('signin');
+function renderAcct(){const u=user();const t=u?u.name:L('signin');
   const a=$('acctBtn');if(a)a.textContent=t;const d=$('drawerAcctBtn');if(d)d.textContent=t;}
+/* ---------- 注册用户制（第七批）：原站付费墙后的功能，改为登录后即可使用，免费开通 ----------
+   适用：命书咨询、六爻 AI 咨询、奇门智能问局、堪舆户型咨询、人体、空间模拟提交。
+   基础排盘/起局/起卦/合盘/档案仍对所有人开放。 */
+function regPromptHTML(title,desc){
+  return '<div class="card"><h2>'+title+' <span class="demotag">注册用户</span></h2>'
+    +'<p class="muted">'+desc+'</p>'
+    +'<div class="row"><button class="btn gold" data-login-open>登录 / 注册</button></div>'
+    +'<p class="muted small">注册免费，用户名只保存在本机浏览器，不联网。登录后即可使用，不扣积分、不要会员。</p></div>';
+}
+function bindLoginOpen(root){(root||document).querySelectorAll('[data-login-open]').forEach(b=>b.addEventListener('click',()=>{$('loginModal').classList.remove('hidden');}));}
 /* ---------- 左侧抽屉导航（PC 与移动端同一组件，覆盖式，不推内容） ---------- */
 function renderDrawer(){const nav=$('drawerNav');if(!nav)return;
   nav.innerHTML='<a href="#/" class="home" data-nav>'+L('home')+'</a>'+TOOL_GROUPS.map((g,i)=>'<div class="group-h">'+groupName(i)+'</div>'+g[1].map(k=>'<a href="'+TOOLS[k].hash+'" data-nav>'+toolName(k)+'</a>').join('')).join('');}
@@ -12318,8 +12330,10 @@ function renderMsResult(){
       +(MS.gen?'<p class="muted small">已生成（本地演示）。命书已随命盘保存到本机存档。</p>':'')+'</div>';
     $('msGen').addEventListener('click',()=>{MS.gen=true;renderMsResult();toast('命书已生成（本地演示）');});
   }else if(MS.tab==='ask'){
+    if(!user()){T.innerHTML=regPromptHTML('咨询','命书咨询为注册用户功能，请先登录 / 注册，免费开通。');bindLoginOpen(T);}
+    else{
     T.innerHTML='<div class="card"><h2>咨询 <span class="demotag">本地演示</span></h2>'
-      +'<div class="note">原站命书咨询仅会员开放；此处为本地规则演示问答，不联网、不收费、不调用 AI，回答按本盘数值与关键词匹配生成，仅供参考。</div>'
+      +'<div class="note">注册用户即可使用；此处为本地规则演示问答，不联网、不收费、不调用 AI，回答按本盘数值与关键词匹配生成，仅供参考。</div>'
       +'<div class="chatbox" id="msChat"><div class="a"><span>你好，我是本地演示问答。可以问我财运、感情、健康、事业、今年流年或用神。</span></div></div>'
       +'<div class="row"><input id="msQ" placeholder="输入你的问题…" style="flex:1;min-width:200px"><button class="btn gold" id="msAskGo">发送</button></div>'
       +'<div class="row">'+['今年流年如何？','财运怎么样？','感情上要注意什么？','用神是什么？'].map(q=>'<button class="btn sm" data-q="'+q+'">'+q+'</button>').join('')+'</div></div>';
@@ -12327,6 +12341,7 @@ function renderMsResult(){
     $('msAskGo').addEventListener('click',go);
     $('msQ').addEventListener('keydown',e=>{if(e.key==='Enter')go();});
     T.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>{$('msQ').value=b.dataset.q;go();}));
+    }
   }else if(MS.tab==='hepan'){
     T.innerHTML='<div class="card"><h2>合盘</h2><p class="muted">输入另一方的出生资料，对照两盘的五行、日主与合冲关系。合盘结果为本地规则对照，仅供参考。</p>'
       +'<div class="grid2"><div><label>对方姓名（选填）<input id="hpName" placeholder="选填"></label><label>对方性别<select id="hpGender"><option value="1">男</option><option value="0">女</option></select></label></div>'
@@ -12465,8 +12480,10 @@ function renderLyTab(v){
     B.innerHTML='<div id="lyResult"></div>';
     renderLyResult();
   }else if(LYST.tab==='ai'){
+    if(!user()){B.innerHTML=regPromptHTML('AI 咨询','六爻 AI 咨询为注册用户功能，请先登录 / 注册，免费开通。');bindLoginOpen(B);}
+    else{
     B.innerHTML='<div class="card"><h2>AI 咨询 <span class="demotag">本地演示</span></h2>'
-      +'<div class="note">原站六爻 AI 咨询按会员每日免费次数与积分计费；此处为本地规则演示问答，不联网、不收费、不调用 AI。</div>'
+      +'<div class="note">注册用户即可使用；此处为本地规则演示问答，不联网、不收费、不调用 AI。</div>'
       +(LYST.res?'<div class="chatbox" id="lyChat"><div class="a"><span>本卦'+LYST.gua.name+'，'+LYST.res.verdict+'（'+LYST.res.score+' 分）。'+esc(LYST.res.kouyu)+'</span></div></div>'
         +'<div class="row"><input id="lyAQ" placeholder="问问这卦…" style="flex:1;min-width:200px"><button class="btn gold" id="lyAskGo2">发送</button></div>'
         +'<div class="row">'+['这卦主要说的是什么？','最需要注意什么？','这件事短期走向如何？','目前该怎么做？'].map(q=>'<button class="btn sm" data-q="'+q+'">'+q+'</button>').join('')+'</div>'
@@ -12484,6 +12501,7 @@ function renderLyTab(v){
       $('lyAQ').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=$('lyAQ').value.trim();$('lyAQ').value='';go(q);}});}
     B.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.q)));
     const tc=$('lyToCast');if(tc)tc.addEventListener('click',()=>{LYST.tab='cast';renderBushi(v);});
+    }
   }else if(LYST.tab==='arch'){
     const arch=store.get('ly',[]);
     B.innerHTML='<div class="card"><h2>档案</h2><p class="muted">问事记录只保存在本机浏览器。</p>'
@@ -12681,8 +12699,10 @@ function renderQmTab(v){
     $('qmDlPng').addEventListener('click',qmDownloadPng);
     $('qmPrint').addEventListener('click',()=>window.print());
   }else if(QMST.tab==='ai'){
+    if(!user()){B.innerHTML=regPromptHTML('智能问局','奇门智能问局为注册用户功能，请先登录 / 注册，免费开通。');bindLoginOpen(B);}
+    else{
     B.innerHTML='<div class="card"><h2>智能问局 <span class="demotag">本地演示</span></h2>'
-      +'<div class="note">原站智能问局走后端 AI 并计费；此处为本地规则演示问答，按本局数值生成，不联网、不收费、不调用 AI。</div>'
+      +'<div class="note">注册用户即可使用；此处为本地规则演示问答，按本局数值生成，不联网、不收费、不调用 AI。</div>'
       +(QMST.pan?'<div class="chatbox" id="qmChat"><div class="a"><span>本局 '+QMST.pan.dj.dun+'遁'+QMST.pan.dj.ju+'局，综合 '+QMST.analysis.score+' 分 · '+QMST.analysis.grade+'。可以问我这局的主线、用神或应期。</span></div></div>'
         +'<div class="row"><input id="qmAQ" placeholder="问问这局…" style="flex:1;min-width:200px"><button class="btn gold" id="qmAskGo">发送</button></div>'
         +'<div class="row">'+['这局主线是什么？','用神在哪里？','应期怎么看？','这事能成吗？'].map(q=>'<button class="btn sm" data-q="'+q+'">'+q+'</button>').join('')+'</div>'
@@ -12700,6 +12720,7 @@ function renderQmTab(v){
       $('qmAQ').addEventListener('keydown',e=>{if(e.key==='Enter'){const q=$('qmAQ').value.trim();$('qmAQ').value='';go(q);}});}
     B.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.q)));
     const tc=$('qmToQiju2');if(tc)tc.addEventListener('click',()=>{QMST.tab='qiju';renderQimen(v);});
+    }
   }else if(QMST.tab==='arch'){
     const arch=store.get('qm',[]);
     B.innerHTML='<div class="card"><h2>档案</h2><p class="muted">问事档案仅保存在本机浏览器。</p>'
@@ -12730,7 +12751,7 @@ function qmDownloadPng(){
   const a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='qimen-'+pan.dj.dun+pan.dj.ju+'ju.png';a.click();toast('PNG 已下载');
 }
 /* ================= 初始化 ================= */
-function openAcctModal(){const u=user();if(u){const a=$('acctInfo');a.innerHTML='<p>用户名：<b>'+esc(u.name)+'</b></p><p>积分余额：<b>'+u.points+'</b>（演示）</p><p>会员：非会员（演示）</p><p class="muted small">上次签到：'+(u.lastSign||'未签到')+'</p>';$('acctModal').classList.remove('hidden');}else{$('loginModal').classList.remove('hidden');}}
+function openAcctModal(){const u=user();if(u){const a=$('acctInfo');a.innerHTML='<p>用户名：<b>'+esc(u.name)+'</b></p><p>身份：注册用户（演示）</p><p class="muted small">账号只保存在本机浏览器，不联网。本站不设积分与会员，注册用户即可使用全部功能。</p>';$('acctModal').classList.remove('hidden');}else{$('loginModal').classList.remove('hidden');}}
 function init(){
   /* 抽屉/主题/语言/账号先绑，每一步单独 try：后面哪一步抛错，抽屉也不能跟着死。 */
   const safeBind=(id,ev,fn)=>{ try{ const el=$(id); if(el) el.addEventListener(ev,fn); }catch(e){ showJsErr(e); } };
@@ -12755,12 +12776,8 @@ function init(){
   $('loginGo').addEventListener('click',()=>{
     const name=$('loginName').value.trim();
     if(name.length<2||name.length>24){toast('用户名为 2–24 位');return;}
-    setUser({name:name,points:0,lastSign:''});$('loginModal').classList.add('hidden');toast('已登录（本地演示）：'+name);router();});
-  $('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginGo').click();});
-  $('signBtn').addEventListener('click',()=>{
-    const u=user();if(!u)return;const t=new Date();const today=t.getFullYear()+'-'+pad2(t.getMonth()+1)+'-'+pad2(t.getDate());
-    if(u.lastSign===today){toast('今天已经签到过了（演示）');return;}
-    u.points+=10;u.lastSign=today;setUser(u);$('acctInfo').innerHTML='<p>用户名：<b>'+esc(u.name)+'</b></p><p>积分余额：<b>'+u.points+'</b>（演示）</p><p>会员：非会员（演示）</p><p class="muted small">上次签到：'+u.lastSign+'</p>';toast('签到成功，+10 积分（演示）');});
+    setUser({name:name});$('loginModal').classList.add('hidden');toast('已登录（本地演示）：'+name);router();});
+  $('loginName').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginGo').click();});
   $('logoutBtn').addEventListener('click',()=>{setUser(null);$('acctModal').classList.add('hidden');toast('已退出登录（本地演示）');router();});
   window.addEventListener('hashchange',router);
   try{ router(); }catch(e){ showJsErr(e); }
